@@ -18,6 +18,7 @@ using version_triple =
 
 version_triple const ZERO_VERSION {0, 0, 0};
 
+inline
 std::string
 to_string (version_triple const & v)
 {
@@ -80,6 +81,7 @@ get_glibc_rt_version ()
 }
 
 
+inline
 version_triple
 get_freebsd_ct_version ()
 {
@@ -96,6 +98,7 @@ get_freebsd_ct_version ()
 }
 
 
+inline
 version_triple
 get_freebsd_rt_version ()
 {
@@ -152,6 +155,7 @@ get_freebsd_rt_version ()
 
 #else
     return ZERO_VERSION;
+
 #endif
 }
 
