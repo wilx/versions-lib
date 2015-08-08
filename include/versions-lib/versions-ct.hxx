@@ -26,7 +26,7 @@
 #if defined (__FreeBSD__)
 #define VERSIONS_LIB_HAS_SYS_TYPES_H 1
 #define VERSIONS_LIB_HAS_SYS_SYSCTL_H 1
-
+#define VERSIONS_LIB_HAS_SYS_PARAM_H 1
 #endif
 
 #if defined (VERSIONS_LIB_HAS_SYS_TYPES_H)
@@ -35,6 +35,10 @@
 
 #if defined (VERSIONS_LIB_HAS_SYS_SYSCTL_H)
 #include <sys/sysctl.h>
+#endif
+
+#if defined (VERSIONS_LIB_HAS_SYS_PARAM_H)
+#include <sys/param.h>
 #endif
 
 #endif // VERSIONS_LIB_VERSIONS_CT_HXX

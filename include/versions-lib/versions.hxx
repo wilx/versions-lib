@@ -81,6 +81,22 @@ get_glibc_rt_version ()
 
 
 version_triple
+get_freebsd_ct_version ()
+{
+#if defined (__FreeBSD__) \
+    && defined (__FreeBSD_version)
+    unsigned short const major = __FreeBSD_version / 100000;
+    unsigned short const minor = (__FreeBSD_version - major * 100000) / 1000;
+    return version_triple {major, minor, 0};
+
+#else
+    return ZERO_VERSION;
+
+#endif
+}
+
+
+version_triple
 get_freebsd_rt_version ()
 {
 #if defined (__FreeBSD__)
