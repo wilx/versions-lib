@@ -12,4 +12,3 @@
   (whitespace-action warn-read-only auto-cleanup))
  (cmake-mode
   (whitespace-action warn-read-only auto-cleanup)))
-

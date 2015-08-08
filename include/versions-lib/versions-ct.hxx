@@ -22,4 +22,19 @@
 
 #endif // __GLIBC__
 
+
+#if defined (__FreeBSD__)
+#define VERSIONS_LIB_HAS_SYS_TYPES_H 1
+#define VERSIONS_LIB_HAS_SYS_SYSCTL_H 1
+
+#endif
+
+#if defined (VERSIONS_LIB_HAS_SYS_TYPES_H)
+#include <sys/types.h>
+#endif
+
+#if defined (VERSIONS_LIB_HAS_SYS_SYSCTL_H)
+#include <sys/sysctl.h>
+#endif
+
 #endif // VERSIONS_LIB_VERSIONS_CT_HXX

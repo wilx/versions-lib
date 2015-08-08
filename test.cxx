@@ -13,4 +13,8 @@ main ()
               << v::to_string (glibc_ct_version) << "\n"
               << "glibc run time version: "
               << v::to_string (glibc_rt_version) << "\n";
+
+    v::version_triple freebsd_rt_version = v::get_freebsd_rt_version ();
+    std::cout << "FreeBSD run time version: "
+              << v::to_string (freebsd_rt_version) << "\n";
 }
