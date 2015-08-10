@@ -21,4 +21,12 @@ main ()
               << v::to_string (freebsd_ct_version) << "\n"
               << "FreeBSD run time version: "
               << v::to_string (freebsd_rt_version) << "\n";
+
+    v::version_triple netbsd_ct_version = v::get_netbsd_ct_version ();
+    v::version_triple netbsd_rt_version = v::get_netbsd_rt_version ();
+    std::cout << "NetBSD compile time version: "
+              << v::to_string (netbsd_ct_version) << "\n"
+              << "NetBSD run time version: "
+              << v::to_string (netbsd_rt_version) << "\n";
+
 }

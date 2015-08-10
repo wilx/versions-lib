@@ -3,6 +3,8 @@
 
 #include <versions-lib/versions-ct.hxx>
 
+#include <cerrno>
+#include <cstdlib>
 #include <tuple>
 #include <sstream>
 #include <string>
@@ -18,20 +20,14 @@ using version_triple =
 
 version_triple const ZERO_VERSION {0, 0, 0};
 
+
 inline
 std::string
 to_string (version_triple const & v)
 {
-    std::string str;
-    str.reserve (15);
-
-    str.append (std::to_string (std::get<0>(v)));
-    str.push_back ('.');
-    str.append (std::to_string (std::get<1>(v)));
-    str.push_back ('.');
-    str.append (std::to_string (std::get<2>(v)));
-
-    return str;
+    std::ostringstream oss;
+    oss << std::get<0>(v) << '.' << std::get<1>(v) << '.' << std::get<2>(v);
+    return oss.str ();
 }
 
 
@@ -150,6 +146,82 @@ get_freebsd_rt_version ()
             iss >> patch;
         }
     }
+
+    return version_triple {major, minor, patch};
+
+#else
+    return ZERO_VERSION;
+
+#endif
+}
+
+
+inline
+version_triple
+get_netbsd_ct_version ()
+{
+#if defined (__NetBSD__) \
+    && defined (__NetBSD_Version__)
+    unsigned short const major = __NetBSD_Version__ / 100000000;
+    unsigned short const minor = (__NetBSD_Version__ - major * 100000000) / 1000000;
+    unsigned short const patch = (__NetBSD_Version__ - major * 100000000 - minor * 1000000) / 100;
+    return version_triple {major, minor, patch};
+
+#else
+    return ZERO_VERSION;
+
+#endif
+}
+
+
+inline
+version_triple
+get_netbsd_rt_version ()
+{
+#if defined (__NetBSD__)
+    std::string buf;
+    buf.resize (20);
+
+    int const kern_osrelease_mib[2] = { CTL_KERN, KERN_OSRELEASE };
+    int retval;
+    std::size_t len = buf.size ();
+    while ((retval = sysctl (kern_osrelease_mib, 2, &buf[0], &len, nullptr,
+                std::size_t (0)) == -1)
+        && errno == ENOMEM)
+    {
+        buf.resize (buf.size () * 2 + 1);
+        len = buf.size ();
+    }
+
+    if (retval != 0)
+        return ZERO_VERSION;
+
+    if (len != 0)
+        buf.resize (len - 1);
+
+    std::istringstream iss (buf);
+
+    unsigned short major;
+    if ((iss >> major).fail ())
+        return ZERO_VERSION;
+
+    char ch;
+    if ((iss >> ch).fail ()
+        || ch != '.')
+        return ZERO_VERSION;
+
+    unsigned short minor;
+    if ((iss >> minor).fail ())
+        return ZERO_VERSION;
+
+    if ((iss >> ch).fail ()
+        || ch != '.')
+        return ZERO_VERSION;
+
+    unsigned short patch;
+    if ((iss >> patch).fail ())
+        return ZERO_VERSION;
+
 
     return version_triple {major, minor, patch};
 

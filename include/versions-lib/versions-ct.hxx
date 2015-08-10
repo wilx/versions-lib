@@ -23,7 +23,7 @@
 #endif // __GLIBC__
 
 
-#if defined (__FreeBSD__)
+#if defined (__FreeBSD__) || defined (__NetBSD__)
 #define VERSIONS_LIB_HAS_SYS_TYPES_H 1
 #define VERSIONS_LIB_HAS_SYS_SYSCTL_H 1
 #define VERSIONS_LIB_HAS_SYS_PARAM_H 1
@@ -40,5 +40,14 @@
 #if defined (VERSIONS_LIB_HAS_SYS_PARAM_H)
 #include <sys/param.h>
 #endif
+
+#if defined (__NetBSD__)
+#if defined (__NetBSD_Prereq__)
+#define VERSIONS_LIB_NETBSD_PREREQ(major, minor, patch) __NetBSD_Prereq__(major, minor, patch)
+#else // !__NetBSD_Prereq__
+#define VERSIONS_LIB_NETBSD_PREREQ(major, minor, patch) \
+    (__NetBSD_Version__ >= (major) * 100000000 + (minor) * 1000000 + (patch) * 100)
+#endif // __NetBSD_Prereq__
+#endif // __NetBSD__
 
 #endif // VERSIONS_LIB_VERSIONS_CT_HXX
