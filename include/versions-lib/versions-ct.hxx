@@ -57,9 +57,9 @@
 #if defined (__OpenBSD__)
 #include <versions-lib/versions-ct-openbsd.hxx>
 #define VERSIONS_LIB_OPENBSD_PREREQ(major, minor)   \
-    (major > VERSIONS_LIB_OPENBSD_CT_MAJOR          \
+    (VERSIONS_LIB_OPENBSD_CT_MAJOR > major          \
      || (major == VERSIONS_LIB_OPENBSD_CT_MAJOR     \
-         && minor >= VERSIONS_LIB_OPENBSD_CT_MINOR))
+         && VERSIONS_LIB_OPENBSD_CT_MINOR >= minor))
 #endif
 
 #endif // VERSIONS_LIB_VERSIONS_CT_HXX
