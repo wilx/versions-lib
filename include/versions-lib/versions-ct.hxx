@@ -23,7 +23,9 @@
 #endif // __GLIBC__
 
 
-#if defined (__FreeBSD__) || defined (__NetBSD__)
+#if defined (__FreeBSD__)                       \
+    || defined (__NetBSD__)                     \
+    || defined (__OpenBSD__)
 #define VERSIONS_LIB_HAS_SYS_TYPES_H 1
 #define VERSIONS_LIB_HAS_SYS_SYSCTL_H 1
 #define VERSIONS_LIB_HAS_SYS_PARAM_H 1
@@ -43,11 +45,21 @@
 
 #if defined (__NetBSD__)
 #if defined (__NetBSD_Prereq__)
-#define VERSIONS_LIB_NETBSD_PREREQ(major, minor, patch) __NetBSD_Prereq__(major, minor, patch)
+#define VERSIONS_LIB_NETBSD_PREREQ(major, minor, patch) \
+    __NetBSD_Prereq__(major, minor, patch)
 #else // !__NetBSD_Prereq__
 #define VERSIONS_LIB_NETBSD_PREREQ(major, minor, patch) \
-    (__NetBSD_Version__ >= (major) * 100000000 + (minor) * 1000000 + (patch) * 100)
+    (__NetBSD_Version__ >= (major) * 100000000          \
+     + (minor) * 1000000 + (patch) * 100)
 #endif // __NetBSD_Prereq__
 #endif // __NetBSD__
+
+#if defined (__OpenBSD__)
+#include <versions-lib/versions-ct-openbsd.hxx>
+#define VERSIONS_LIB_OPENBSD_PREREQ(major, minor)   \
+    (major > VERSIONS_LIB_OPENBSD_CT_MAJOR          \
+     || (major == VERSIONS_LIB_OPENBSD_CT_MAJOR     \
+         && minor >= VERSIONS_LIB_OPENBSD_CT_MINOR))
+#endif
 
 #endif // VERSIONS_LIB_VERSIONS_CT_HXX

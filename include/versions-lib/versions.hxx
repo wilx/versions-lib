@@ -232,6 +232,71 @@ get_netbsd_rt_version ()
 }
 
 
+inline
+version_triple
+get_openbsd_ct_version ()
+{
+#if defined (__OpenBSD__)
+    return version_triple {VERSIONS_LIB_OPENBSD_CT_MAJOR,
+        VERSIONS_LIB_OPENBSD_CT_MINOR, 0};
+
+#else
+    return ZERO_VERSION;
+
+#endif
+}
+
+
+inline
+version_triple
+get_openbsd_rt_version ()
+{
+#if defined (__OpenBSD__)
+    std::string buf;
+    buf.resize (20);
+
+    int const kern_osrelease_mib[2] = { CTL_KERN, KERN_OSRELEASE };
+    int retval;
+    std::size_t len = buf.size ();
+    while ((retval = sysctl (kern_osrelease_mib, 2, &buf[0], &len, nullptr,
+                std::size_t (0)) == -1)
+        && errno == ENOMEM)
+    {
+        buf.resize (buf.size () * 2 + 1);
+        len = buf.size ();
+    }
+
+    if (retval != 0)
+        return ZERO_VERSION;
+
+    if (len != 0)
+        buf.resize (len - 1);
+
+    std::istringstream iss (buf);
+
+    unsigned short major;
+    if ((iss >> major).fail ())
+        return ZERO_VERSION;
+
+    char ch;
+    if ((iss >> ch).fail ()
+        || ch != '.')
+        return ZERO_VERSION;
+
+    unsigned short minor;
+    if ((iss >> minor).fail ())
+        return ZERO_VERSION;
+
+    return version_triple {major, minor, 0};
+
+#else
+    return ZERO_VERSION;
+
+#endif
+}
+
+
+
 } // namespace versionlib
 
 #endif // VERSIONS_LIB_VERSIONS_HXX

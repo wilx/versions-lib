@@ -29,4 +29,10 @@ main ()
               << "NetBSD run time version: "
               << v::to_string (netbsd_rt_version) << "\n";
 
+    v::version_triple openbsd_ct_version = v::get_openbsd_ct_version ();
+    v::version_triple openbsd_rt_version = v::get_openbsd_rt_version ();
+    std::cout << "OpenBSD compile time version: "
+              << v::to_string (openbsd_ct_version) << "\n"
+              << "OpenBSD run time version: "
+              << v::to_string (openbsd_rt_version) << "\n";
 }
