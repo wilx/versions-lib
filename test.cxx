@@ -14,6 +14,12 @@ main ()
               << "glibc run time version: "
               << v::to_string (glibc_rt_version) << "\n";
 
+    v::version_triple linux_ct_version = v::get_linux_ct_version ();
+    v::version_triple linux_rt_version = v::get_linux_rt_version ();
+    std::cout << "Linux compile time version: "
+              << v::to_string (linux_ct_version) << "\n"
+              << "Linux run time version: "
+              << v::to_string (linux_rt_version) << "\n";
 
     v::version_triple freebsd_ct_version = v::get_freebsd_ct_version ();
     v::version_triple freebsd_rt_version = v::get_freebsd_rt_version ();

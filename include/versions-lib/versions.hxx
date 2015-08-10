@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <tuple>
 #include <sstream>
+#include <fstream>
 #include <string>
 #include <limits>
 
@@ -67,6 +68,58 @@ get_glibc_rt_version ()
     if (iss >> ch
         && ch == '.')
         iss >> patch;
+
+    return version_triple {major, minor, patch};
+
+#else
+    return ZERO_VERSION;
+
+#endif
+}
+
+
+inline
+version_triple
+get_linux_ct_version ()
+{
+#if defined (__linux__)
+    unsigned short const major = LINUX_VERSION_CODE >> 16;
+    unsigned short const minor = (LINUX_VERSION_CODE >> 8) & 0xFF;
+    unsigned short const patch = LINUX_VERSION_CODE & 0xFF;
+
+    return version_triple {major, minor, patch};
+
+#else
+    return ZERO_VERSION;
+
+#endif
+}
+
+
+inline
+version_triple
+get_linux_rt_version ()
+{
+#if defined (__linux__)
+    std::ifstream ifs ("/proc/sys/kernel/osrelease");
+
+    unsigned short major;
+    if ((ifs >> major).fail ())
+        return ZERO_VERSION;
+
+    char ch;
+    if ((ifs >> ch).fail ()
+        || ch != '.')
+        return ZERO_VERSION;
+
+    unsigned short minor;
+    if ((ifs >> minor).fail ())
+        return ZERO_VERSION;
+
+    unsigned short patch = 0;
+    if (ifs >> ch
+        && ch == '.')
+        ifs >> patch;
 
     return version_triple {major, minor, patch};
 

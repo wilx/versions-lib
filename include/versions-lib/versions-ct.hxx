@@ -23,6 +23,13 @@
 #endif // __GLIBC__
 
 
+#if defined (__linux__)
+#include <linux/version.h>
+#define VERSIONS_LIB_LINUX_PREREQ(major, minor, patch) \
+    (LINUX_VERSION_CODE >= KERNEL_VERSION(major, minor, patch))
+#endif // __linux__
+
+
 #if defined (__FreeBSD__)                       \
     || defined (__NetBSD__)                     \
     || defined (__OpenBSD__)
