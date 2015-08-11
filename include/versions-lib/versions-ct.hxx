@@ -39,7 +39,7 @@
 #define VERSIONS_LIB_HAS_SYS_TYPES_H 1
 #define VERSIONS_LIB_HAS_SYS_SYSCTL_H 1
 #define VERSIONS_LIB_HAS_SYS_PARAM_H 1
-#endif
+#endif // __FreeBSD__ || __NetBSD__ || __OpenBSD__
 
 #if defined (VERSIONS_LIB_HAS_SYS_TYPES_H)
 #include <sys/types.h>
@@ -70,6 +70,6 @@
     (VERSIONS_LIB_OPENBSD_CT_MAJOR > major          \
      || (major == VERSIONS_LIB_OPENBSD_CT_MAJOR     \
          && VERSIONS_LIB_OPENBSD_CT_MINOR >= minor))
-#endif
+#endif // __OpenBSD__
 
 #endif // VERSIONS_LIB_VERSIONS_CT_HXX
