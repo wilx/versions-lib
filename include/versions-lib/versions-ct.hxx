@@ -53,6 +53,11 @@
 #include <sys/param.h>
 #endif
 
+#if defined (__FreeBSD__)
+#define VERSIONS_LIB_FREEBSD_PREREQ(major, minor)               \
+    (__FreeBSD_version >= (major) * 100000 + (minor) * 1000)
+#endif // __FreeBSD__
+
 #if defined (__NetBSD__)
 #if defined (__NetBSD_Prereq__)
 #define VERSIONS_LIB_NETBSD_PREREQ(major, minor, patch) \
