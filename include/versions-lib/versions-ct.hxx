@@ -66,10 +66,10 @@
 
 #if defined (__OpenBSD__)
 #include <versions-lib/versions-ct-openbsd.hxx>
-#define VERSIONS_LIB_OPENBSD_PREREQ(major, minor)   \
-    (VERSIONS_LIB_OPENBSD_CT_MAJOR > major          \
-     || (major == VERSIONS_LIB_OPENBSD_CT_MAJOR     \
-         && VERSIONS_LIB_OPENBSD_CT_MINOR >= minor))
+#define VERSIONS_LIB_OPENBSD_PREREQ(major, minor)           \
+    (VERSIONS_LIB_OPENBSD_CT_MAJOR > (major)                \
+        || ((major) == VERSIONS_LIB_OPENBSD_CT_MAJOR        \
+            && VERSIONS_LIB_OPENBSD_CT_MINOR >= (minor)))
 #endif // __OpenBSD__
 
 #endif // VERSIONS_LIB_VERSIONS_CT_HXX
