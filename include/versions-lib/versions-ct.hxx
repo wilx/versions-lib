@@ -20,6 +20,8 @@
 #include <gnu/libc-version.h>
 #endif
 
+#else // ! __GLIBC__
+#define VERSIONS_LIB_GLIBC_PREREQ(major, minor) 0
 #endif // __GLIBC__
 
 
@@ -30,6 +32,8 @@
 #endif
 #define VERSIONS_LIB_LINUX_PREREQ(major, minor, patch) \
     (LINUX_VERSION_CODE >= KERNEL_VERSION(major, minor, patch))
+#else // ! __linux__
+#define VERSIONS_LIB_LINUX_PREREQ(major, minor, patch) 0
 #endif // __linux__
 
 
@@ -56,6 +60,8 @@
 #if defined (__FreeBSD__)
 #define VERSIONS_LIB_FREEBSD_PREREQ(major, minor)               \
     (__FreeBSD_version >= (major) * 100000 + (minor) * 1000)
+#else // ! __FreeBSD__
+#define VERSIONS_LIB_FREEBSD_PREREQ(major, minor) 0
 #endif // __FreeBSD__
 
 #if defined (__NetBSD__)
@@ -67,6 +73,8 @@
     (__NetBSD_Version__ >= (major) * 100000000          \
      + (minor) * 1000000 + (patch) * 100)
 #endif // __NetBSD_Prereq__
+#else // ! __NetBSD__
+#define VERSIONS_LIB_NETBSD_PREREQ(major, minor, patch) 0
 #endif // __NetBSD__
 
 #if defined (__OpenBSD__)
@@ -75,6 +83,8 @@
     (VERSIONS_LIB_OPENBSD_CT_MAJOR > (major)                \
         || ((major) == VERSIONS_LIB_OPENBSD_CT_MAJOR        \
             && VERSIONS_LIB_OPENBSD_CT_MINOR >= (minor)))
+#else // ! __OpenBSD__
+#define VERSIONS_LIB_OPENBSD_PREREQ(major, minor) 0
 #endif // __OpenBSD__
 
 #endif // VERSIONS_LIB_VERSIONS_CT_HXX
