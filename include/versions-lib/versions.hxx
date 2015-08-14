@@ -383,6 +383,7 @@ get_cygwin_api_ct_version ()
 }
 
 
+#if defined (__CYGWIN__)
 template <std::size_t HeaderLen>
 inline
 long
@@ -401,11 +402,14 @@ parse_cygwin_version (char const (& header)[HeaderLen], std::string const & str)
     long const val = std::strtol (&*it, nullptr, 10);
     if (val == 0 && errno == EINVAL)
         return 0;
-    if (val == LONG_MIN || val == LONG_MAX && errno == ERANGE)
+    if ((val == std::numeric_limits<long>::min ()
+            || val == std::numeric_limits<long>::max ())
+        && errno == ERANGE)
         return 0;
 
     return val;
 }
+#endif // __CYGWIN__
 
 
 inline
