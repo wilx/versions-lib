@@ -87,4 +87,19 @@
 #define VERSIONS_LIB_OPENBSD_PREREQ(major, minor) 0
 #endif // __OpenBSD__
 
+#if defined (__CYGWIN__)
+#include <cygwin/version.h>
+#include <sys/cygwin.h>
+#define VERSIONS_LIB_CYGWIN_API_PREREQ(major, minor) \
+    (CYGWIN_VERSION_API_MAJOR > major                \
+        || (CYGWIN_VERSION_API_MAJOR == major        \
+            && CYGWIN_VERSION_API_MINOR >= minor))
+#define VERSIONS_LIB_CYGWIN_DLL_PREREQ(major, minor, patch)             \
+    (CYGWIN_VERSION_DLL_COMBINED                                        \
+        >= CYGWIN_VERSION_DLL_MAKE_COMBINED (major * 1000 + minor, patch))
+#else // ! __CYGWIN__
+#define VERSIONS_LIB_CYGWIN_API_PREREQ(major, minor) 0
+#define VERSIONS_LIB_CYGWIN_DLL_PREREQ(major, minor, patch) 0
+#endif // __CYGWIN__
+
 #endif // VERSIONS_LIB_VERSIONS_CT_HXX

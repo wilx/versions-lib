@@ -41,4 +41,18 @@ main ()
               << v::to_string (openbsd_ct_version) << "\n"
               << "OpenBSD run time version: "
               << v::to_string (openbsd_rt_version) << "\n";
+
+    v::version_triple cygwin_dll_ct_version = v::get_cygwin_dll_ct_version ();
+    v::version_triple cygwin_dll_rt_version = v::get_cygwin_dll_rt_version ();
+    std::cout << "Cygwin DLL compile time version: "
+              << v::to_string (cygwin_dll_ct_version) << "\n"
+              << "Cygwin DLL run time version: "
+              << v::to_string (cygwin_dll_rt_version) << "\n";
+
+    v::version_triple cygwin_api_ct_version = v::get_cygwin_api_ct_version ();
+    v::version_triple cygwin_api_rt_version = v::get_cygwin_api_rt_version ();
+    std::cout << "Cygwin API compile time version: "
+              << v::to_string (cygwin_api_ct_version) << "\n"
+              << "Cygwin API run time version: "
+              << v::to_string (cygwin_api_rt_version) << "\n";
 }

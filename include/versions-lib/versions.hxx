@@ -10,6 +10,7 @@
 #include <fstream>
 #include <string>
 #include <limits>
+#include <algorithm>
 
 #include <iostream>
 #include <iomanip>
@@ -349,6 +350,108 @@ get_openbsd_rt_version ()
 }
 
 
+inline
+version_triple
+get_cygwin_dll_ct_version ()
+{
+#if defined (__CYGWIN__)
+    unsigned short const major = CYGWIN_VERSION_DLL_MAJOR / 1000;
+    unsigned short const minor = CYGWIN_VERSION_DLL_MAJOR % 1000;
+    unsigned short const patch = CYGWIN_VERSION_DLL_MINOR;
+
+    return version_triple {major, minor, patch};
+
+#else
+    return ZERO_VERSION;
+
+#endif
+}
+
+
+inline
+version_triple
+get_cygwin_api_ct_version ()
+{
+#if defined (__CYGWIN__)
+    return version_triple {CYGWIN_VERSION_API_MAJOR, CYGWIN_VERSION_API_MINOR,
+            0};
+
+#else
+    return ZERO_VERSION;
+
+#endif
+}
+
+
+template <std::size_t HeaderLen>
+inline
+long
+parse_cygwin_version (char const (& header)[HeaderLen], std::string const & str)
+{
+    std::size_t const header_len = HeaderLen - 1;
+    std::string::const_iterator const str_begin = str.begin ();
+    std::string::const_iterator const str_end = str.end ();
+    std::string::const_iterator it = std::search (str_begin, str_end,
+        &header[0], &header[0] + header_len);
+    if (it == str_end)
+        return 0;
+
+    it += header_len;
+    errno = 0;
+    long const val = std::strtol (&*it, nullptr, 10);
+    if (val == 0 && errno == EINVAL)
+        return 0;
+    if (val == LONG_MIN || val == LONG_MAX && errno == ERANGE)
+        return 0;
+
+    return val;
+}
+
+
+inline
+version_triple
+get_cygwin_dll_rt_version ()
+{
+#if defined (__CYGWIN__)
+    std::string const str = reinterpret_cast<char const *>(
+        cygwin_internal (CW_GETVERSIONINFO));
+
+    char const DLL_MAJOR_HEADER[] = "%%% Cygwin dll major: ";
+    long dll_major = parse_cygwin_version (DLL_MAJOR_HEADER, str);
+
+    char const DLL_MINOR_HEADER[] = "%%% Cygwin dll minor: ";
+    long dll_minor = parse_cygwin_version (DLL_MINOR_HEADER, str);
+
+    return version_triple {dll_major / 1000, dll_major % 1000, dll_minor};
+
+#else
+    return ZERO_VERSION;
+
+#endif
+}
+
+
+inline
+version_triple
+get_cygwin_api_rt_version ()
+{
+#if defined (__CYGWIN__)
+    std::string const str = reinterpret_cast<char const *>(
+        cygwin_internal (CW_GETVERSIONINFO));
+
+    char const API_MAJOR_HEADER[] = "%%% Cygwin api major: ";
+    long api_major = parse_cygwin_version (API_MAJOR_HEADER, str);
+
+    char const API_MINOR_HEADER[] = "%%% Cygwin api minor: ";
+    long api_minor = parse_cygwin_version (API_MINOR_HEADER, str);
+
+    return version_triple {api_major, api_minor, 0};
+
+#else
+    return ZERO_VERSION;
+
+#endif
+}
 
 } // namespace versionlib
 
