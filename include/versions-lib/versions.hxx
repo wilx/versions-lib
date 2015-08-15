@@ -15,7 +15,7 @@
 #include <iostream>
 #include <iomanip>
 
-namespace versionlib {
+namespace versionslib {
 
 using version_triple =
     std::tuple<unsigned short, unsigned short, unsigned short>;
@@ -457,6 +457,6 @@ get_cygwin_api_rt_version ()
 #endif
 }
 
-} // namespace versionlib
+} // namespace versionslib
 
 #endif // VERSIONS_LIB_VERSIONS_HXX

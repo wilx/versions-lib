@@ -2,7 +2,7 @@
 #include <iostream>
 #include <iomanip>
 
-namespace v = versionlib;
+namespace v = versionslib;
 
 int
 main ()
