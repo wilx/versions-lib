@@ -102,7 +102,12 @@ version_triple
 get_linux_rt_version ()
 {
 #if defined (__linux__)
-    std::ifstream ifs ("/proc/sys/kernel/osrelease");
+    struct utsname name;
+    int ret = uname (&name);
+    if (ret == -1)
+        return ZERO_VERSION;
+
+    std::istringstream ifs (name.release);
 
     unsigned short major;
     if ((ifs >> major).fail ())

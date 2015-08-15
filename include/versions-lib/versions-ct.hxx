@@ -29,6 +29,7 @@
 #if ! defined (LINUX_VERSION_CODE) \
     || ! defined (KERNEL_VERSION)
 #include <linux/version.h>
+#include <sys/utsname.h>
 #endif
 #define VERSIONS_LIB_LINUX_PREREQ(major, minor, patch) \
     (LINUX_VERSION_CODE >= KERNEL_VERSION(major, minor, patch))
