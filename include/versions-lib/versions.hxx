@@ -35,6 +35,42 @@ to_string (version_triple const & v)
 
 inline
 version_triple
+parse_version_triple (std::istream & istr, bool patch_ver_optional = true)
+{
+    unsigned short major;
+    if ((istr >> major).fail ())
+        return ZERO_VERSION;
+
+    char ch;
+    if ((istr >> ch).fail ()
+        || ch != '.')
+        return ZERO_VERSION;
+
+    unsigned short minor;
+    if ((istr >> minor).fail ())
+        return ZERO_VERSION;
+
+    unsigned short patch = 0;
+    if (patch_ver_optional)
+    {
+        if (istr >> ch
+            && ch == '.')
+            istr >> patch;
+    }
+    else
+    {
+        if (! (istr >> ch
+                && ch == '.'
+                && (istr >> patch).good ()))
+            return ZERO_VERSION;
+    }
+
+    return version_triple {major, minor, patch};
+}
+
+
+inline
+version_triple
 get_glibc_ct_version ()
 {
 #if defined (VERSIONS_LIB_GLIBC)
@@ -108,26 +144,7 @@ get_linux_rt_version ()
         return ZERO_VERSION;
 
     std::istringstream ifs (name.release);
-
-    unsigned short major;
-    if ((ifs >> major).fail ())
-        return ZERO_VERSION;
-
-    char ch;
-    if ((ifs >> ch).fail ()
-        || ch != '.')
-        return ZERO_VERSION;
-
-    unsigned short minor;
-    if ((ifs >> minor).fail ())
-        return ZERO_VERSION;
-
-    unsigned short patch = 0;
-    if (ifs >> ch
-        && ch == '.')
-        ifs >> patch;
-
-    return version_triple {major, minor, patch};
+    return parse_version_triple (ifs);
 
 #else
     return ZERO_VERSION;
@@ -259,30 +276,7 @@ get_netbsd_rt_version ()
         buf.resize (len - 1);
 
     std::istringstream iss (buf);
-
-    unsigned short major;
-    if ((iss >> major).fail ())
-        return ZERO_VERSION;
-
-    char ch;
-    if ((iss >> ch).fail ()
-        || ch != '.')
-        return ZERO_VERSION;
-
-    unsigned short minor;
-    if ((iss >> minor).fail ())
-        return ZERO_VERSION;
-
-    if ((iss >> ch).fail ()
-        || ch != '.')
-        return ZERO_VERSION;
-
-    unsigned short patch;
-    if ((iss >> patch).fail ())
-        return ZERO_VERSION;
-
-
-    return version_triple {major, minor, patch};
+    return parse_version_triple (iss);
 
 #else
     return ZERO_VERSION;
@@ -333,20 +327,7 @@ get_openbsd_rt_version ()
 
     std::istringstream iss (buf);
 
-    unsigned short major;
-    if ((iss >> major).fail ())
-        return ZERO_VERSION;
-
-    char ch;
-    if ((iss >> ch).fail ()
-        || ch != '.')
-        return ZERO_VERSION;
-
-    unsigned short minor;
-    if ((iss >> minor).fail ())
-        return ZERO_VERSION;
-
-    return version_triple {major, minor, 0};
+    return parse_version_triple (iss);
 
 #else
     return ZERO_VERSION;
@@ -388,50 +369,18 @@ get_cygwin_api_ct_version ()
 }
 
 
-#if defined (__CYGWIN__)
-template <std::size_t HeaderLen>
-inline
-long
-parse_cygwin_version (char const (& header)[HeaderLen], std::string const & str)
-{
-    std::size_t const header_len = HeaderLen - 1;
-    std::string::const_iterator const str_begin = str.begin ();
-    std::string::const_iterator const str_end = str.end ();
-    std::string::const_iterator it = std::search (str_begin, str_end,
-        &header[0], &header[0] + header_len);
-    if (it == str_end)
-        return 0;
-
-    it += header_len;
-    errno = 0;
-    long const val = std::strtol (&*it, nullptr, 10);
-    if (val == 0 && errno == EINVAL)
-        return 0;
-    if ((val == std::numeric_limits<long>::min ()
-            || val == std::numeric_limits<long>::max ())
-        && errno == ERANGE)
-        return 0;
-
-    return val;
-}
-#endif // __CYGWIN__
-
-
 inline
 version_triple
 get_cygwin_dll_rt_version ()
 {
 #if defined (__CYGWIN__)
-    std::string const str = reinterpret_cast<char const *>(
-        cygwin_internal (CW_GETVERSIONINFO));
+    struct utsname name;
+    int ret = uname (&name);
+    if (ret == -1)
+        return ZERO_VERSION;
 
-    char const DLL_MAJOR_HEADER[] = "%%% Cygwin dll major: ";
-    long dll_major = parse_cygwin_version (DLL_MAJOR_HEADER, str);
-
-    char const DLL_MINOR_HEADER[] = "%%% Cygwin dll minor: ";
-    long dll_minor = parse_cygwin_version (DLL_MINOR_HEADER, str);
-
-    return version_triple {dll_major / 1000, dll_major % 1000, dll_minor};
+    std::istringstream ifs (name.release);
+    return parse_version_triple (ifs);
 
 #else
     return ZERO_VERSION;
@@ -445,16 +394,14 @@ version_triple
 get_cygwin_api_rt_version ()
 {
 #if defined (__CYGWIN__)
-    std::string const str = reinterpret_cast<char const *>(
-        cygwin_internal (CW_GETVERSIONINFO));
+    struct utsname name;
+    int ret = uname (&name);
+    if (ret == -1)
+        return ZERO_VERSION;
 
-    char const API_MAJOR_HEADER[] = "%%% Cygwin api major: ";
-    long api_major = parse_cygwin_version (API_MAJOR_HEADER, str);
-
-    char const API_MINOR_HEADER[] = "%%% Cygwin api minor: ";
-    long api_minor = parse_cygwin_version (API_MINOR_HEADER, str);
-
-    return version_triple {api_major, api_minor, 0};
+    std::istringstream ifs (name.release);
+    ifs.ignore (std::numeric_limits<std::streamsize>::max (), '(');
+    return parse_version_triple (ifs);
 
 #else
     return ZERO_VERSION;

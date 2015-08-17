@@ -91,6 +91,7 @@
 #if defined (__CYGWIN__)
 #include <cygwin/version.h>
 #include <sys/cygwin.h>
+#include <sys/utsname.h>
 #define VERSIONS_LIB_CYGWIN_API_PREREQ(major, minor) \
     (CYGWIN_VERSION_API_MAJOR > major                \
         || (CYGWIN_VERSION_API_MAJOR == major        \

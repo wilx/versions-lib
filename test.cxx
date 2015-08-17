@@ -7,6 +7,11 @@ namespace v = versionslib;
 int
 main ()
 {
+    struct utsname name;
+    uname (&name);
+    std::cout << "release: " << name.release << "\n"
+              << "version: " << name.version << "\n";
+
     v::version_triple glibc_ct_version = v::get_glibc_ct_version ();
     v::version_triple glibc_rt_version = v::get_glibc_rt_version ();
     std::cout << "glibc compile time version: "
