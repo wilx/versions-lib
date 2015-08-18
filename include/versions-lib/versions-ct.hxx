@@ -3,6 +3,18 @@
 
 #include <stdlib.h>
 
+#define VERSIONS_LIB_COMBINE_VERSION(major, minor, patch)   \
+    ((major) * 1000 * 1000 + (minor) * 1000 + (patch))
+
+#if defined (__GNUC__)
+#define VERSIONS_LIB_GCC_PREREQ(major, minor, patch)            \
+    (VERSIONS_LIB_COMBINE_VERSION (__GNUC__, __GNUC_MINOR__,    \
+        __GNUC_PATCHLEVEL__)                                    \
+        >= VERSIONS_LIB_COMBINE_VERSION (major, minor, patch))
+#else
+#define VERSIONS_LIB_GCC_PREREQ(major, minor, patch) 0
+#endif
+
 #if defined (__GLIBC__) \
     || defined (__GNU_LIBRARY__)
 
