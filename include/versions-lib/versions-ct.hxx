@@ -7,10 +7,10 @@
     ((major) * 1000 * 1000 + (minor) * 1000 + (patch))
 
 #if defined (__GNUC__)
-#define VERSIONS_LIB_GCC_PREREQ(major, minor, patch)            \
-    (VERSIONS_LIB_COMBINE_VERSION (__GNUC__, __GNUC_MINOR__,    \
-        __GNUC_PATCHLEVEL__)                                    \
-        >= VERSIONS_LIB_COMBINE_VERSION (major, minor, patch))
+#define VERSIONS_LIB_GCC_PREREQ(major, minor, patch)                    \
+    (VERSIONS_LIB_COMBINE_VERSION (__GNUC__, __GNUC_MINOR__,            \
+        __GNUC_PATCHLEVEL__)                                            \
+        >= VERSIONS_LIB_COMBINE_VERSION ((major), (minor), (patch)))
 #else
 #define VERSIONS_LIB_GCC_PREREQ(major, minor, patch) 0
 #endif
@@ -19,7 +19,7 @@
 #define VERSIONS_LIB_CLANG_PREREQ(major, minor, patch)               \
     (VERSIONS_LIB_COMBINE_VERSION (__clang_major__, __clang_minor__, \
         __clang_patchlevel__)                                        \
-        >= VERSIONS_LIB_COMBINE_VERSION (major, minor, patch))
+        >= VERSIONS_LIB_COMBINE_VERSION ((major), (minor), (patch)))
 #else
 #define VERSIONS_LIB_CLANG_PREREQ(major, minor, patch) 0
 #endif
@@ -53,7 +53,7 @@
 #include <sys/utsname.h>
 #endif
 #define VERSIONS_LIB_LINUX_PREREQ(major, minor, patch) \
-    (LINUX_VERSION_CODE >= KERNEL_VERSION(major, minor, patch))
+    (LINUX_VERSION_CODE >= KERNEL_VERSION((major), (minor), (patch)))
 #else // ! __linux__
 #define VERSIONS_LIB_LINUX_PREREQ(major, minor, patch) 0
 #endif // __linux__
@@ -114,12 +114,13 @@
 #include <sys/cygwin.h>
 #include <sys/utsname.h>
 #define VERSIONS_LIB_CYGWIN_API_PREREQ(major, minor) \
-    (CYGWIN_VERSION_API_MAJOR > major                \
-        || (CYGWIN_VERSION_API_MAJOR == major        \
-            && CYGWIN_VERSION_API_MINOR >= minor))
+    (CYGWIN_VERSION_API_MAJOR > (major)              \
+        || (CYGWIN_VERSION_API_MAJOR == (major)      \
+            && CYGWIN_VERSION_API_MINOR >= (minor)))
 #define VERSIONS_LIB_CYGWIN_DLL_PREREQ(major, minor, patch)             \
     (CYGWIN_VERSION_DLL_COMBINED                                        \
-        >= CYGWIN_VERSION_DLL_MAKE_COMBINED (major * 1000 + minor, patch))
+        >= CYGWIN_VERSION_DLL_MAKE_COMBINED ((major) * 1000 + (minor),  \
+            (patch)))
 #else // ! __CYGWIN__
 #define VERSIONS_LIB_CYGWIN_API_PREREQ(major, minor) 0
 #define VERSIONS_LIB_CYGWIN_DLL_PREREQ(major, minor, patch) 0
