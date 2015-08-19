@@ -15,6 +15,15 @@
 #define VERSIONS_LIB_GCC_PREREQ(major, minor, patch) 0
 #endif
 
+#if defined (__clang__)
+#define VERSIONS_LIB_CLANG_PREREQ(major, minor, patch)               \
+    (VERSIONS_LIB_COMBINE_VERSION (__clang_major__, __clang_minor__, \
+        __clang_patchlevel__)                                        \
+        >= VERSIONS_LIB_COMBINE_VERSION (major, minor, patch))
+#else
+#define VERSIONS_LIB_CLANG_PREREQ(major, minor, patch) 0
+#endif
+
 #if defined (__GLIBC__) \
     || defined (__GNU_LIBRARY__)
 
