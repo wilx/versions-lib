@@ -38,5 +38,5 @@ of OS. All of them return `version_triple`, even on different OS.
 - `get_linux_{ct,rt}_version ()`
 - `get_freebsd_{ct,rt}_version ()`
 - `get_netbsd_{ct,rt}_version ()`
-- `get_openbsd_ct_version ()`
+- `get_openbsd_{ct,rt}_version ()`
 - `get_cygwin_{dll,api}_{ct,rt}_version ()`
